@@ -1,6 +1,7 @@
 // #include <Servo.h>
 //#include <Adafruit_TinyUSB.h>  // Required for SAMD boards
 #include <Wire.h> //I2C Arduino Library
+#include "CytronMotorDriver.h"
 #include <MechaQMC5883.h>   // library for magnet sensor (not the sensor we have, but only library that works for it)
 #include "burr_brain_pins.h"
 
@@ -9,6 +10,10 @@ MechaQMC5883 mag_sensor;    // library has 0x1D as the automatic I2C address for
 
 // Creating object for the sorting servo
 // Servo sort_servo;
+
+CytronMD ferriswheel_motor(PWM_DIR, ferriswheel_PWM, ferriswheel_DIR);
+CytronMD conveyor_motor(PWM_DIR, convey_PWM, convey_DIR);
+
 
 // easy access for constants to tune
 const int current_sensor_jam_threshold = 20;   // Analog read output threshold parameter to determine if there is a jam in the ferris wheel. 
@@ -19,17 +24,17 @@ const int jam_reverse_time = 1000;      // amount of time (in ms) we will spin t
 
 // Sets up ferris wheel motor, conveyor belt motor, the sorting servo, and current sensor.
 void ferris_wheel_n_sorting_setup(){
-    // Ferris wheel DC motor pins
-    pinMode(ferriswheel_DIR, OUTPUT);
-    pinMode(ferriswheel_PWM, OUTPUT);
-    digitalWrite(ferriswheel_DIR, LOW); // choose LOW as default state
-    digitalWrite(ferriswheel_PWM, LOW); // choose 0 as default speed
+    // // Ferris wheel DC motor pins
+    // pinMode(ferriswheel_DIR, OUTPUT);
+    // pinMode(ferriswheel_PWM, OUTPUT);
+    // digitalWrite(ferriswheel_DIR, LOW); // choose LOW as default state
+    // digitalWrite(ferriswheel_PWM, LOW); // choose 0 as default speed
 
-    // Conveyor belt DC motor pins 
-    pinMode(convey_DIR, OUTPUT);
-    pinMode(convey_PWM, OUTPUT);
-    digitalWrite(convey_DIR, LOW);      // choose LOW s default state
-    digitalWrite(convey_PWM, LOW);      // choose 0 as default speed
+    // // Conveyor belt DC motor pins 
+    // pinMode(convey_DIR, OUTPUT);
+    // pinMode(convey_PWM, OUTPUT);
+    // digitalWrite(convey_DIR, LOW);      // choose LOW s default state
+    // digitalWrite(convey_PWM, LOW);      // choose 0 as default speed
 
     // Sorting servo pin & weird "attach" thing you have to do for servos
     // pinMode(sorting_servo_PWM, OUTPUT);
@@ -119,15 +124,17 @@ int detect_magnet(){
 // Run conveyor belt forward. This is a non-blocking function (this will run no matter what until you call stop).
 void run_conveyor_belt(){
     Serial.println("Start conveyor belt");
-    digitalWrite(convey_DIR, HIGH);                // NEED TO TEST DIRECTION
-    analogWrite(convey_PWM, conveyor_speed);       // NEED TO TEST SPEED
+    // digitalWrite(convey_DIR, HIGH);                // NEED TO TEST DIRECTION
+    // analogWrite(convey_PWM, conveyor_speed);       // NEED TO TEST SPEED
+    conveyor_motor.setSpeed(conveyor_speed * -1);     // negative speed is the correct direction
 }
 
 // Stop conveyor belt.
 void stop_conveyor_belt(){
     Serial.println("Stop conveyor belt");
-    digitalWrite(convey_DIR, LOW);      // set motor direction (best to drive pin LOW if stopping)
-    analogWrite(convey_PWM, 0);         // set speed to 0
+    // digitalWrite(convey_DIR, LOW);      // set motor direction (best to drive pin LOW if stopping)
+    // analogWrite(convey_PWM, 0);         // set speed to 0
+    conveyor_motor.setSpeed(0);
 }
 
 
@@ -136,14 +143,16 @@ void stop_conveyor_belt(){
 // Starts the ferris wheel spinning. This is a non-blocking function.
 void spin_ferris_wheel(){
     Serial.println("Start ferris wheel");
-    digitalWrite(ferriswheel_DIR, LOW);                   // set motor direction
-    analogWrite(ferriswheel_PWM, ferris_wheel_speed);      // set motor speed
+    // digitalWrite(ferriswheel_DIR, LOW);                   // set motor direction
+    // analogWrite(ferriswheel_PWM, ferris_wheel_speed);      // set motor speed
+    ferriswheel_motor.setSpeed(ferris_wheel_speed);    // positive makes it go in correct direction
 }
 
 // Stops the ferris wheel.
 void stop_ferris_wheel(){
-    digitalWrite(ferriswheel_DIR, LOW);     // set motor direction (best to drive pin LOW if stopping)
-    analogWrite(ferriswheel_PWM, 0);        // set speed to 0
+    // digitalWrite(ferriswheel_DIR, LOW);     // set motor direction (best to drive pin LOW if stopping)
+    // analogWrite(ferriswheel_PWM, 0);        // set speed to 0
+    ferriswheel_motor.setSpeed(0);
     Serial.println("Stop ferris wheel");
 }
 
@@ -152,8 +161,9 @@ void stop_ferris_wheel(){
 void ferris_wheel_jam_recovery(){
     stop_ferris_wheel();
     delay(500);                                  // stops motors in between each direction change for motor safety
-    digitalWrite(ferriswheel_DIR, HIGH);                   // set motor direction in reverse
-    analogWrite(ferriswheel_PWM, ferris_wheel_speed);     // set motor speed
+    // digitalWrite(ferriswheel_DIR, HIGH);                   // set motor direction in reverse
+    // analogWrite(ferriswheel_PWM, ferris_wheel_speed);     // set motor speed
+    ferriswheel_motor.setSpeed(ferris_wheel_speed * -1);         // negative makes it go in correct reverse direction
     delay(jam_reverse_time);                              // amount of time (in ms) for ferris wheel to go in reverse
     stop_ferris_wheel();    
     delay(500);                              // stops motors in between each direction change for motor safety
