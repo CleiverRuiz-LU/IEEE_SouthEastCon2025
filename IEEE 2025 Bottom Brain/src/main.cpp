@@ -9,7 +9,7 @@
 
 char incomingChar;
 int half_speed = 128;
-int full_speed = 255;
+int full_speed = 200;
 
 void setup() {
   // Initialize serial monitor
@@ -32,16 +32,16 @@ void loop() {
 
       // then need to send 'done' flag back to serial?
     } else if (incomingChar == 'L'){
-      go_left(half_speed);    // go left forever
+      go_left(full_speed);    // go left forever
 
     } else if (incomingChar == 'R'){
-      go_right(half_speed);   // go right forever
+      go_right(full_speed);   // go right forever
 
     } else if (incomingChar == 'F'){
-      go_forward(half_speed);  // go forward forever
+      go_forward(full_speed);  // go forward forever
 
     } else if (incomingChar == 'B'){
-      go_backward(half_speed); // go backward forever
+      go_backward(full_speed); // go backward forever
 
     } else if (incomingChar == 'S'){
       stop_motors();           // stop all motors
