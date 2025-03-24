@@ -50,6 +50,7 @@ void gyro_setup(){
     /*Initialize device*/
     Serial.println(F("Initializing I2C devices..."));
     mpu.initialize();
+    delay(500);
 
     /*Verify connection*/
     Serial.println(F("Testing MPU6050 connection..."));
