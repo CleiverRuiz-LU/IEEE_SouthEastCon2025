@@ -10,11 +10,11 @@
 #define TX 1
 
 // Distance Sensors
-#define XSHUT1 18
-#define XSHUT2 19
+#define XSHUT1 23
+#define XSHUT2 24
 #define XSHUT3 25
-#define XSHUT4 24
-#define XSHUT5 23
+#define XSHUT4 19
+#define XSHUT5 18
 
 // Bucket Switches
 #define lbucket_raise_switch 6
