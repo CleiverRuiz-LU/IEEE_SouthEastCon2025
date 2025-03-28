@@ -1,12 +1,13 @@
 #include <Arduino.h>
-// #include <Servo.h>
+// #include <PWMServo.h>
+//#include <Adafruit_TinyUSB.h>
 #include <Wire.h> //I2C Arduino Library
 #include "CytronMotorDriver.h"
 #include "burr_brain_pins.h"
 
 
 // Creating servo object for the mast servo
-// Servo mast_servo;
+// PWMServo mast_servo;
 
 // Object declaration for the DC bucket pinch motors
 CytronMD lbucket_pinch_motor(PWM_DIR, lbucket_pinch_PWM, lbucket_pinch_DIR);
@@ -119,7 +120,6 @@ void release_right_bucket(){
 /////////////////////////////////////////////// Mast Servo ////////////////////////////////////////////
 
 // void mast_setup(){
-//     pinMode(mast_servo_PWM, OUTPUT);
 //     mast_servo.attach(mast_servo_PWM);  // weird thing with servos where you have to "attach" them to their pins
 // }
 

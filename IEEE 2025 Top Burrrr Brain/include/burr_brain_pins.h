@@ -38,3 +38,6 @@
 
 // Switch
 #define ferriswheel_rot_switch 24
+
+// Stepper Enable
+#define stepper_enable 15
